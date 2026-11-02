@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaming Community - jQuery Actions</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#070707;color:#fff;line-height:1.6}
+header{background:linear-gradient(90deg,#d40000,#8b0000,#d40000);padding:20px 7%;text-align:center;border-bottom:2px solid #ff2020}
+header h1{font-size:34px;letter-spacing:2px}
+header p{font-size:15px;font-style:italic;margin-top:4px}
+nav{background:#111;text-align:center;border-bottom:1px solid #e00000}
+nav button{background:none;border:none;color:#fff;padding:15px 24px;font-weight:bold;font-size:14px;cursor:pointer}
+nav button.active,nav button:hover{background:#d40000}
+.hero{min-height:220px;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;background:#050505;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.96),rgba(0,0,0,.6),rgba(0,0,0,.35)),url("Call_of_duty.jpeg") center/cover no-repeat;opacity:.75}
+.hero-content{position:relative;z-index:1;padding:30px}
+.hero h2{font-size:40px;text-transform:uppercase;text-shadow:0 0 14px #e00000}
+.hero h2 span{color:#ff2525}
+.container{width:90%;max-width:1050px;margin:30px auto}
+.panel{display:none;background:#101010;border:1px solid #850000;border-radius:12px;padding:28px}
+.panel h2{color:#ff3333;margin-bottom:4px}
+.panel p.info{color:#bbb;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:25px}
+label{display:block;font-weight:bold;color:#ddd;margin-top:8px}
+input,select{width:100%;padding:10px;margin:6px 0 10px;background:#202020;color:#fff;border:1px solid #444;border-radius:5px}
+input:focus,select:focus{border-color:#ff3030;outline:none}
+input[type=range]{accent-color:#d40000;padding:0}
+.row{display:flex;gap:10px}.row>div{flex:1}
+button.go{background:#d40000;color:#fff;border:1px solid #d40000;padding:11px 24px;border-radius:5px;font-weight:bold;cursor:pointer;margin-top:10px}
+button.go:hover{background:#a80000}
+.out{background:#151515;border:1px solid #720000;border-radius:8px;padding:18px}
+.out h3{color:#ff3838;margin-bottom:10px}
+.line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #333}
+.line b{color:#ff3030}
+.total{font-size:22px;color:#fff;background:#d40000;border-radius:5px;padding:6px 12px;text-align:right;margin-top:14px;font-weight:bold}
+.check{display:flex;align-items:center;gap:8px;font-weight:normal}.check input{width:auto;margin:0;accent-color:#d40000}
+.swatch{display:inline-block;width:38px;height:38px;border-radius:50%;margin:6px 6px 6px 0;cursor:pointer;border:3px solid #333}
+.swatch.sel{border-color:#ff3030;box-shadow:0 0 10px #ff3030}
+#garage{background:radial-gradient(circle at 50% 80%,#2a0000,#0c0c0c);border:1px solid #720000;border-radius:8px;padding:20px;text-align:center}
+#specs{margin-top:10px;color:#bbb}
+footer{background:#111;border-top:2px solid #d00000;text-align:center;padding:25px;margin-top:30px;color:#bbb}
+footer h2{color:#ff3030;margin-bottom:4px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>GAMING COMMUNITY</h1><p>jQuery Actions Hub</p></header>
+<nav>
+<button data-target="#budget" class="active">Budget Calculator</button>
+<button data-target="#cake">Cake Shop</button>
+<button data-target="#workshop">Car Workshop</button>
+</nav>
+<section class="hero"><div class="hero-content"><h2>Plan. Order. <span>Customise.</span></h2><p>Budget planner, cake shop and car workshop powered by jQuery.</p></div></section>
+
+<div class="container">
+<!-- 1. Budget Calculator -->
+<div class="panel" id="budget">
+<h2>Gamer's Budget Calculator</h2>
+<p class="info">Enter your monthly amount and the percentage for each expense.</p>
+<div class="grid">
+<div>
+<label>Total Amount (Rs.)</label><input type="number" id="amount" placeholder="e.g. 20000">
+<div class="row">
+<div><label>Room Rent (%)</label><input type="number" id="pRent" placeholder="%"></div>
+<div><label>Accessories (%)</label><input type="number" id="pAcc" placeholder="%"></div>
+</div>
+<div class="row">
+<div><label>Emergency (%)</label><input type="number" id="pEmg" placeholder="%"></div>
+<div><label>Saving (%)</label><input type="number" id="pSave" placeholder="%"></div>
+</div>
+<button class="go" id="evaluate">Evaluate My Money</button>
+</div>
+<div class="out">
+<h3>Money Split</h3>
+<div class="line">Room Rent <b id="rent">Rs. 0.00</b></div>
+<div class="line">Gaming Accessories <b id="acc">Rs. 0.00</b></div>
+<div class="line">Emergency <b id="emg">Rs. 0.00</b></div>
+<div class="line">Saving <b id="save">Rs. 0.00</b></div>
+<div class="total" id="budgetTotal">Total : Rs. 0.00</div>
+</div>
+</div>
+</div>
+
+<!-- 2. Cake Order -->
+<div class="panel" id="cake">
+<h2>Gaming Birthday Cake Shop</h2>
+<p class="info">Choose your themed cake and get the bill instantly.</p>
+<div class="grid">
+<div>
+<label>Cake Theme</label>
+<select id="theme">
+<option value="600">Minecraft Creeper Cake - Rs.600/kg</option>
+<option value="700">PlayStation Controller Cake - Rs.700/kg</option>
+<option value="650">Call of Duty Cake - Rs.650/kg</option>
+<option value="750">Valorant Cake - Rs.750/kg</option>
+</select>
+<div class="row">
+<div><label>Weight (kg)</label>
+<select id="weight"><option>0.5</option><option selected>1</option><option>1.5</option><option>2</option></select></div>
+<div><label>Quantity</label><input type="number" id="qty" value="1" min="1"></div>
+</div>
+<label>Flavour</label>
+<select id="flavour">
+<option value="0">Vanilla (+Rs.0/kg)</option>
+<option value="50">Chocolate (+Rs.50/kg)</option>
+<option value="80">Red Velvet (+Rs.80/kg)</option>
+</select>
+<label>Add-ons</label>
+<label class="check"><input type="checkbox" class="addon" value="50"> Candles (Rs.50)</label>
+<label class="check"><input type="checkbox" class="addon" value="150"> Photo Print (Rs.150)</label>
+<label class="check"><input type="checkbox" class="addon" value="100"> Name on Cake (Rs.100)</label>
+<label>Delivery</label>
+<label class="check"><input type="radio" name="del" value="0" checked> Store Pickup</label>
+<label class="check"><input type="radio" name="del" value="80"> Home Delivery (Rs.80)</label>
+<button class="go" id="order">Calculate Order</button>
+</div>
+<div class="out" id="bill">
+<h3>Order Summary</h3>
+<div class="line">Cake Cost <b id="cCake">Rs. 0.00</b></div>
+<div class="line">Add-ons <b id="cAdd">Rs. 0.00</b></div>
+<div class="line">Delivery <b id="cDel">Rs. 0.00</b></div>
+<div class="line">GST (5%) <b id="cTax">Rs. 0.00</b></div>
+<div class="total" id="cTotal">Total : Rs. 0.00</div>
+</div>
+</div>
+</div>
+
+<!-- 3. Car Body Workshop -->
+<div class="panel" id="workshop">
+<h2>Gaming Car Body Workshop</h2>
+<p class="info">Customise your racing car - body colour, glass tint and tyre size.</p>
+<div class="grid">
+<div id="garage">
+<svg viewBox="0 0 440 200" width="100%">
+<ellipse cx="220" cy="180" rx="200" ry="10" fill="#000" opacity=".5"/>
+<path id="carBody" d="M20 150 L45 105 Q60 85 100 82 L160 80 L210 40 Q225 30 250 30 L320 30 Q345 32 360 55 L390 88 Q425 95 428 125 L428 150 Z" fill="#d40000"/>
+<path class="glass" d="M220 45 L250 40 L315 40 Q332 40 344 60 L360 82 L200 82 Z" fill="#d9d9d9"/>
+<rect x="264" y="40" width="9" height="42" id="pillar" fill="#d40000"/>
+<rect x="36" y="112" width="70" height="8" rx="3" fill="#111"/>
+<g id="wheels">
+<circle class="tyre" cx="110" cy="152" r="32" fill="#111" stroke="#ff3030" stroke-width="3"/><circle class="rim" cx="110" cy="152" r="15" fill="#aaa"/>
+<circle class="tyre" cx="340" cy="152" r="32" fill="#111" stroke="#ff3030" stroke-width="3"/><circle class="rim" cx="340" cy="152" r="15" fill="#aaa"/>
+</g>
+</svg>
+<p id="specs">Colour: Red | Tint: Clear | Tyre: 17 inch</p>
+</div>
+<div>
+<label>Body Colour</label>
+<div id="colours">
+<span class="swatch sel" style="background:#d40000" data-c="#d40000" data-n="Red"></span>
+<span class="swatch" style="background:#8b0000" data-c="#8b0000" data-n="Dark Red"></span>
+<span class="swatch" style="background:#ff4d4d" data-c="#ff4d4d" data-n="Light Red"></span>
+<span class="swatch" style="background:#111" data-c="#111111" data-n="Black"></span>
+<span class="swatch" style="background:#555" data-c="#555555" data-n="Gunmetal"></span>
+<span class="swatch" style="background:#ddd" data-c="#dddddd" data-n="Silver"></span>
+</div>
+<label>Glass Tint</label>
+<select id="tint">
+<option value="#d9d9d9">Clear</option>
+<option value="#8a8a8a">Light Tint (50%)</option>
+<option value="#3a3a3a">Dark Tint (20%)</option>
+<option value="#0c0c0c">Limo Black (5%)</option>
+</select>
+<label>Tyre Size: <span id="tyreVal">17</span> inch</label>
+<input type="range" id="tyre" min="14" max="22" value="17">
+<button class="go" id="reset">Reset Car</button>
+</div>
+</div>
+</div>
+</div>
+<footer><h2>GAMING COMMUNITY</h2><p>&copy; 2026 | Experiment 7 - Working with jQuery</p></footer>
+
+<script>
+$(document).ready(function(){
+  // Tab navigation with jQuery effects
+  $("#budget").fadeIn(500);
+  $("nav button").click(function(){
+    $("nav button").removeClass("active");
+    $(this).addClass("active");
+    $(".panel").hide();
+    $($(this).data("target")).fadeIn(500);
+  });
+
+  // 1. Budget calculator
+  $("#evaluate").click(function(){
+    let amount = parseFloat($("#amount").val());
+    let p = [parseFloat($("#pRent").val()), parseFloat($("#pAcc").val()),
+             parseFloat($("#pEmg").val()), parseFloat($("#pSave").val())];
+    if (isNaN(amount) || amount <= 0 || p.some(isNaN)) {
+      alert("Please enter the amount and all four percentages.");
+      return;
+    }
+    let sum = p[0] + p[1] + p[2] + p[3];
+    if (sum != 100) {
+      alert("Cannot divide the amount! The percentages add up to " + sum + "%, they must total 100%.");
+      return;
+    }
+    let ids = ["#rent", "#acc", "#emg", "#save"];
+    $.each(ids, function(i, id){
+      $(id).text("Rs. " + (amount * p[i] / 100).toFixed(2)).hide().fadeIn(400);
+    });
+    $("#budgetTotal").text("Total : Rs. " + amount.toFixed(2));
+  });
+
+  // 2. Cake order calculation
+  $("#order").click(function(){
+    let rate = parseFloat($("#theme").val()) + parseFloat($("#flavour").val());
+    let weight = parseFloat($("#weight").val());
+    let qty = parseInt($("#qty").val()) || 1;
+    let cake = rate * weight * qty;
+    let addons = 0;
+    $(".addon:checked").each(function(){ addons += parseFloat($(this).val()); });
+    let delivery = parseFloat($("input[name='del']:checked").val());
+    let tax = (cake + addons) * 0.05;
+    let total = cake + addons + delivery + tax;
+    $("#cCake").text("Rs. " + cake.toFixed(2));
+    $("#cAdd").text("Rs. " + addons.toFixed(2));
+    $("#cDel").text("Rs. " + delivery.toFixed(2));
+    $("#cTax").text("Rs. " + tax.toFixed(2));
+    $("#cTotal").text("Total : Rs. " + total.toFixed(2));
+    $("#bill").css("border-color", "#ff3030").hide().slideDown(400);
+  });
+
+  // 3. Car body workshop
+  function specs(){
+    $("#specs").text("Colour: " + $(".swatch.sel").data("n") + " | Tint: " +
+      $("#tint option:selected").text() + " | Tyre: " + $("#tyre").val() + " inch");
+  }
+  $(".swatch").click(function(){
+    $(".swatch").removeClass("sel");
+    $(this).addClass("sel");
+    $("#carBody, #pillar").attr("fill", $(this).data("c"));
+    specs();
+  });
+  $("#tint").change(function(){
+    $(".glass").attr("fill", $(this).val());
+    specs();
+  });
+  $("#tyre").on("input", function(){
+    let size = parseInt($(this).val());
+    $("#tyreVal").text(size);
+    $(".tyre").attr("r", size * 32 / 17);
+    $(".rim").attr("r", size * 15 / 17);
+    specs();
+  });
+  $("#reset").click(function(){
+    $(".swatch").first().click();
+    $("#tint").val("#d9d9d9").change();
+    $("#tyre").val(17).trigger("input");
+  });
+});
+</script>
+</body>
+</html>
